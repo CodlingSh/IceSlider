@@ -13,7 +13,7 @@ const uint8_t PROGMEM ground[] = {
 class Level {
   private:
     Arduboy2 *ab;
-    uint8_t lines[64];
+    uint8_t lines[255][2];
     uint8_t sectsCompleted = 0;
     uint8_t offset = 0;
 
@@ -21,51 +21,65 @@ class Level {
     Level(Arduboy2 *ab_ptr) : ab(ab_ptr) {}
 
     void generateLevel() {
-      for (uint8_t i = 0; i < 64; i++) {
-        int8_t segment = 0b00000000;
-        int8_t top = random(0, 4);
-        int8_t bottom = random(0, 4);
+      for (uint8_t i = 0; i < 255; i++) {
+        // int8_t segment = 0b00000000;
+        int8_t offset = random(0, 6);
+        int8_t length = random(53, 58);
         
-        for (int8_t i = 0; i <= top; i++) {
-          if (top != 0) {segment |= (1 << (7 - (i - 1)));}
-        }
-        for (int8_t i = 0; i <= bottom; i++) {
-          if (bottom != 0) {segment |= (1 << (i - 1));} 
-        }
-
-
-        lines[i] = segment;
+        lines[i][0] = offset;
+        lines[i][1] = length;
       }
     }
 
-    // void draw() {
-    //   uint8_t *buffer = ab->getBuffer();
-    //   static uint16_t i = 0;
-
-    //   i++;
-
-    //   if (i > 1000) {
-    //     i = 0;
-    //   }
-
-    //   buffer[i] = 0b11111111;
-
-
-    // }
-
-    void drawTile(uint8_t tileX, uint8_t tileY) {
+    void drawBufferLine(uint8_t offset, uint8_t height, uint8_t x) {
       uint8_t *buffer = ab->getBuffer();
+      uint8_t line1end = offset;
+      uint8_t line2start = offset + height;
 
-      uint16_t index = ((uint16_t)tileY * 128) + ((uint16_t)tileX * 8);
+      // // Drawing the top lines
+      int8_t toDraw1 = offset / 8 - 1;
+      uint8_t excess1 = offset % 8;
 
-      buffer[index + 0 - offset] = 0b11111111;
-      buffer[index + 1 - offset] = 0b11111111;
-      buffer[index + 2 - offset] = 0b11111111;
-      buffer[index + 3 - offset] = 0b11111111;
-      buffer[index + 4 - offset] = 0b11111111;
-      buffer[index + 5 - offset] = 0b11111111;
-      buffer[index + 6 - offset] = 0b11111111;
-      buffer[index + 7 - offset] = 0b11111111;
+      if (toDraw1 >= 0) {
+        for (uint8_t i = 0; i <= toDraw1; i++) {
+          buffer[x + i * 128] = 0b11111111;
+        }
+      }
+
+      if (excess1 > 0) {
+        buffer[x + (toDraw1 + 1) * 128] = determineExcess(excess1, false);
+      }
+
+      // // Drawing the bottom lines
+      int8_t toDraw2 = line2start / 8;
+      uint8_t excess2 = line2start % 8;
+
+      if (toDraw2 >= 0) {
+        for (uint8_t i = toDraw2; i < 8; i++) {
+          buffer[x + i * 128] = 0b11111111;
+        }
+      }
+
+      if (excess2 > 0) {
+        buffer[x + toDraw2 * 128] = determineExcess(excess2, true);
+      }
+      
+    }
+
+    uint8_t determineExcess(uint8_t num, bool flipped) {
+      uint8_t byte = 0;
+      
+      if (num == 0) {
+        return 0b00000000;  
+      }
+
+      byte = 0b11111111 >> (8 - num);
+
+      if (flipped) {
+        byte ^= 0b11111111;
+      }
+
+      return byte;
     }
 
     void update() {
@@ -79,16 +93,11 @@ class Level {
       ab->drawFastHLine(0, 0, 128, WHITE);
       ab->drawFastHLine(0, 63, 128, WHITE);
 
-      for (uint8_t x = 0; x < 16; x++) {
-        uint8_t segment = lines[x];
-
-        for (uint8_t y = 0; y < 8; y++) {
-          if (segment & (1 << (7 - y))) {
-            drawTile(x, y);
-          }
-        }
+      for (uint8_t i = 0; i < 127; i++) {
+        drawBufferLine(lines[i][0], lines[i][1], i);
       }
-      ab->setCursor(32, 0);z
+
+      ab->setCursor(90, 0);
       ab->println(offset);
     }
 };
