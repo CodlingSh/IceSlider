@@ -16,36 +16,49 @@ class Bullet {
     ) 
       : ab(ab_ptr) {}
 
-    void set_x(int8_t newX) {
+    void setX(int8_t newX) {
       x = newX;
     }
 
-    void set_y(int8_t newY) {
+    void setY(int8_t newY) {
       y = newY;
     }
 
     void respawn() {
-      
+      isActive = false;
+      x = -22;
+      y = -22;
+    }
+
+    void activate() {
+      isActive = true;
+      dir = 2;
+    }
+
+    bool getActive() {
+      return isActive;
     }
 
     void update() {
       if (isActive) {
         switch(dir) {
           case 0:
-            x--;
+            x -= 2;
             break;
           case 1:
-            y++;
+            y += 2;
             break;
           case 2:
-            x++;
+            x += 2;
             break;
           case 3:
-            y--;
+            y -= 2;
             break;
         }
 
-        if (x > 67 || x < 0 || y > 124 || y < 0) {}
+        if (x > 120 || x < 0 || y > 67 || y < 0) {
+          respawn();
+        }
       }
     }
 

@@ -5,11 +5,13 @@
 #include "bullet.h"
 #include "level.h"
 #include "fuelGage.h"
+#include "enemy.h"
 
 Arduboy2 ab;
 Camera camera(0, 0);
 Player player(&ab);
 Level level(&ab);
+Enemy enemies[6];
 
 
 // 22x64, 1 frame(s), 178 bytes
@@ -58,8 +60,19 @@ void loop() {
   level.update();
   player.update();
 
+  for (uint8_t i = 0; i < 6; i++) {
+    if (enemies[i].isActive()) {
+      enemies[i].update();
+    }
+  }
+
   level.draw();
   player.draw();
+  for (uint8_t i = 0; i < 6; i++) {
+    if (enemies[i].isActive()) {
+      enemies[i].draw();
+    }
+  }
   // ab.fillRect(106, 0, 24, 64, BLACK);
   // ab.drawBitmap(106, 0, gage, 22, 64, BLACK);
   Sprites::drawOverwrite(106, 0, gage, 0);

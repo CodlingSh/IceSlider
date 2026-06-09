@@ -15,7 +15,9 @@ class Level {
     Arduboy2 *ab;
     uint8_t lines[255][2];
     uint8_t sectsCompleted = 0;
-    uint8_t offset = 0;
+    uint8_t count = 0;
+    uint8_t speed = 2;
+    uint8_t speedCount = 4;
 
   public:
     Level(Arduboy2 *ab_ptr) : ab(ab_ptr) {}
@@ -82,11 +84,38 @@ class Level {
       return byte;
     }
 
-    void update() {
-      // generateLevel();
-      if (ab->pressed(A_BUTTON) || ab->pressed(B_BUTTON)) {
-        offset++;
+    void scrollLevel() {
+      for (uint8_t i = 0; i < 254; i++) {
+        lines[i][0] = lines[i + 1][0];
+        lines[i][1] = lines[i + 1][1];
       }
+
+      lines[254][0] = random(0, 6);
+      lines[254][1] = random(53, 58);
+    }
+
+    void update() {
+
+      if (ab->pressed(LEFT_BUTTON) || ab->pressed(B_BUTTON)) {
+        speedCount = 6;
+      } else if (ab->pressed(RIGHT_BUTTON)) {
+        speedCount = 1;
+      } else {
+        speedCount = 2;
+      }
+
+      speed -= 1;
+
+      if (speed == 0) {
+        scrollLevel();
+        speed = speedCount;
+      }
+      count++;
+
+      // generateLevel();
+      // if (ab->pressed(A_BUTTON) || ab->pressed(B_BUTTON)) {
+      //   offset++;
+      // }
     }
 
     void draw() {
@@ -98,7 +127,7 @@ class Level {
       }
 
       ab->setCursor(90, 0);
-      ab->println(offset);
+      ab->println(count);
     }
 };
 

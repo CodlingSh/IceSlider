@@ -24,21 +24,35 @@ class Player {
   public:
     Player(Arduboy2 *ab_ptr) : ab(ab_ptr), bullet(ab_ptr) {}
 
+    void fire() {
+      if (!bullet.getActive()) {
+        bullet.setX(x + 5);
+        bullet.setY(y + 3);
+        bullet.activate();
+      }
+    }
+
     void update() {
       // Movement
       if (ab->pressed(UP_BUTTON)) {
         y--;
       }
-      if (ab->pressed(DOWN_BUTTON)) {
+      else if (ab->pressed(DOWN_BUTTON)) {
         y++;
       }
 
       // Shooting
+      if (ab->pressed(A_BUTTON)) {
+        fire();
+      }
+
+      bullet.update();
 
     }
 
     void draw() {
       Sprites::drawPlusMask(x, y, ship, frame);
+      bullet.draw();
     }
 };
 
