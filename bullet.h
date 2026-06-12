@@ -24,6 +24,14 @@ class Bullet {
       y = newY;
     }
 
+    uint8_t getX() {
+      return x;
+    }
+
+    uint8_t getY() {
+      return y;
+    }
+
     void respawn() {
       isActive = false;
       x = -22;

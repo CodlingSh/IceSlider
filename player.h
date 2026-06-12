@@ -24,6 +24,10 @@ class Player {
   public:
     Player(Arduboy2 *ab_ptr) : ab(ab_ptr), bullet(ab_ptr) {}
 
+    Bullet& getBullet() {
+      return bullet;
+    }
+
     void fire() {
       if (!bullet.getActive()) {
         bullet.setX(x + 5);

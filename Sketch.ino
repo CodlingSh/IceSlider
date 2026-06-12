@@ -66,6 +66,13 @@ void loop() {
     }
   }
 
+  for (uint8_t enemy = 0; enemy < 6; enemy++) {
+    if (enemyHit(player.getBullet(), enemies[enemy])) {
+      enemies[enemy].die();
+      player.getBullet().respawn();
+    }
+  }
+
   level.draw();
   player.draw();
   for (uint8_t i = 0; i < 6; i++) {
@@ -82,4 +89,17 @@ void loop() {
   ab.print("%");
 
   ab.display();
+}
+
+bool enemyHit(Bullet& blt, Enemy& nme) {
+  if (
+    blt.getX() + 3 > nme.getX() &&
+    blt.getX() < nme.getX() + nme.getWidth() &&
+    blt.getY() > nme.getY() &&
+    blt.getY() < nme.getY() + nme.getHeight()
+  ) {
+    return true;
+  } else {
+    return false;
+  }
 }
