@@ -40,7 +40,7 @@ void setup() {
   ab.setFrameRate(60);
 
   ab.initRandomSeed();
-  level.generateSecondSect();
+  level.generateLevel();
 }
 
 void loop() {
