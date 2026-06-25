@@ -15,7 +15,7 @@ const uint8_t PROGMEM ship[] = {
 class Player {
   private:
     Arduboy2 *ab;
-    int8_t x = 3;
+    int8_t x = 25;
     int8_t y = 28;
     uint8_t frame = 0;
     Bullet bullet;
