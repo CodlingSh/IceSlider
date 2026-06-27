@@ -36,7 +36,7 @@ const uint8_t PROGMEM opening[254][2] = {
   {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, 
   {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, 
   {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, {1, 62}, 
-  {0, 62}, {0, 62}, {0, 62}, {0, 62}
+  {1, 62}, {1, 62}, {1, 62}, {1, 62}
 };
 
 class Level {
@@ -47,6 +47,9 @@ class Level {
     uint8_t lineCount = 0;
     uint8_t speed = 2;
     uint8_t speedCount = 4;
+    int8_t topHeight = 1;
+    int8_t bottomHeight = 1;
+    uint8_t mood = 0;
 
   public:
     Level(Arduboy2 *ab_ptr) : ab(ab_ptr) {
@@ -54,10 +57,32 @@ class Level {
     }
 
     void generateLevel() {
+      const int8_t values[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+      int8_t offset = 0;
+      int8_t length = 0;
+
       for (uint8_t i = 127; i < 254; i++) {
-        // int8_t segment = 0b00000000;
-        int8_t offset = random(1, 4);
-        int8_t length = random(63 - offset, 64 - offset);
+        topHeight += values[random(8)];
+        bottomHeight += values[random(8)];
+
+        if (topHeight <= 0) {
+          topHeight = 1;
+        }
+
+        if (bottomHeight <= 0) {
+          bottomHeight = 1;
+        }
+
+        if (topHeight >= 4) {
+          topHeight = 3;
+        }
+
+        if (bottomHeight >= 4) {
+          bottomHeight = 3;
+        }
+
+        offset = topHeight;
+        length = 63 - (topHeight + bottomHeight);
         
         lines[i][0] = offset;
         lines[i][1] = length;
