@@ -10,8 +10,8 @@
 Arduboy2 ab;
 Camera camera(0, 0);
 Player player(&ab);
-Level level(&ab);
 Enemy enemies[6];
+Level level(&ab, enemies);
 
 
 // 22x64, 1 frame(s), 178 bytes
