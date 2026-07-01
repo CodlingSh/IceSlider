@@ -11,7 +11,7 @@ const uint8_t PROGMEM nullox[] = {
 
 class Enemy {
   private:
-    uint8_t x = 64;
+    uint8_t x = 200;
     uint8_t y = 32;
     uint8_t width = 7;
     uint8_t height = 8;
