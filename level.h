@@ -2,13 +2,7 @@
 #define LEVEL_H
 
 #include <Arduboy2.h>
-
-// 8x8, 1 frame(s), 10 bytes
-// Example: Sprites::drawOverwrite(x, y, ground, frame);
-// const uint8_t PROGMEM ground[] = {
-//   8, 8,
-//   0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
-// };
+#include "enemy.h"
 
 const uint8_t PROGMEM opening[254][2] = {
   {0, 64}, {0, 64}, {0, 64}, {0, 64}, {0, 64}, {0, 64}, {0, 64}, {0, 64}, {0, 64}, {0, 64}, 
@@ -42,6 +36,7 @@ const uint8_t PROGMEM opening[254][2] = {
 class Level {
   private:
     Arduboy2 *ab;
+    Enemy *enemies;
     uint8_t lines[254][2];
     uint8_t sectsCompleted = 0;
     uint8_t lineCount = 0;
@@ -52,7 +47,7 @@ class Level {
     uint8_t mood = 0;
 
   public:
-    Level(Arduboy2 *ab_ptr) : ab(ab_ptr) {
+    Level(Arduboy2 *ab_ptr, Enemy *enem) : ab(ab_ptr), enemies(enem) {
       memcpy_P(lines, opening, sizeof(lines));
     }
 
@@ -87,9 +82,11 @@ class Level {
         lines[i][0] = offset;
         lines[i][1] = length;
       }
+
+      spawnEnemies();
     }
 
-    void buildLevel() {
+    void spawnEnemies() {
 
     }
 
@@ -154,6 +151,12 @@ class Level {
       // lines[254][1] = random(53, 58);
     }
 
+    void scrollEnemies() {
+      for (uint8_t i = 0; i < 6; i++) {
+        enemies[i].setX(enemies[i].getX() - 1);
+      }
+    }
+
     void update() {
 
       if (ab->pressed(LEFT_BUTTON) || ab->pressed(B_BUTTON)) {
@@ -168,6 +171,7 @@ class Level {
 
       if (speed == 0) {
         scrollLevel();
+        scrollEnemies();
         lineCount++;
         speed = speedCount;
       }
@@ -176,11 +180,6 @@ class Level {
         generateLevel();
         lineCount = 0;
       }
-
-      // generateLevel();
-      // if (ab->pressed(A_BUTTON) || ab->pressed(B_BUTTON)) {
-      //   offset++;
-      // }
     }
 
     void draw() {
