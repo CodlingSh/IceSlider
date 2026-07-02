@@ -74,11 +74,7 @@ void loop() {
 
   level.draw();
   player.draw();
-  for (uint8_t i = 0; i < 6; i++) {
-    if (enemies[i].isActive()) {
-      enemies[i].draw();
-    }
-  }
+  
   // ab.fillRect(106, 0, 24, 64, BLACK);
   // ab.drawBitmap(106, 0, gage, 22, 64, BLACK);
   Sprites::drawOverwrite(0, 0, gage, 0);
