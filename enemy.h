@@ -12,11 +12,11 @@ const uint8_t PROGMEM nullox[] = {
 class Enemy {
   private:
     uint8_t x = 200;
-    uint8_t y = 32;
+    uint8_t y = 100;
     uint8_t width = 7;
     uint8_t height = 8;
     uint8_t *spr = nullox;
-    bool active = true;
+    bool active = false;
   public:
 
     bool isActive() {
@@ -39,6 +39,10 @@ class Enemy {
       y = newY;
     }
 
+    void setActive(bool isActive) {
+      active = isActive;
+    }
+
     uint8_t getWidth() {
       return width;
     }
@@ -50,11 +54,19 @@ class Enemy {
     void die() {
       setX(222);
       setY(222);
+      setActive(false);
+    }
 
+    void spawn(uint8_t newX, uint8_t newY) {
+      setX(newX);
+      setY(newY);
+      setActive(true);
     }
 
     void update() {
-
+      if (getX() == 0) {
+        die();
+      }
     }
 
     void draw() {

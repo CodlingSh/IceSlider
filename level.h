@@ -87,7 +87,9 @@ class Level {
     }
 
     void spawnEnemies() {
-
+      for (uint8_t i = 0; i < 6; i++) {
+        enemies[i].spawn(127 + (random(10) * 8), (random(5) * 8));
+      }
     }
 
     void drawBufferLine(uint8_t offset, uint8_t height, uint8_t x) {
@@ -180,6 +182,12 @@ class Level {
         generateLevel();
         lineCount = 0;
       }
+
+      for (uint8_t i = 0; i < 6; i++) {
+        if (enemies[i].isActive()) {
+          enemies[i].update();
+        }
+      }
     }
 
     void draw() {
@@ -190,8 +198,16 @@ class Level {
         drawBufferLine(lines[i][0], lines[i][1], i);
       }
 
+      for (uint8_t i = 0; i < 6; i++) {
+        if (enemies[i].isActive()) {
+          enemies[i].draw();
+        }
+      }
+
       ab->setCursor(90, 0);
       ab->println(lineCount);
+
+
     }
 };
 
