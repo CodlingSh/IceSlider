@@ -87,9 +87,20 @@ class Level {
     }
 
     void spawnEnemies() {
-      for (uint8_t i = 0; i < 6; i++) {
-        enemies[i].spawn(127 + (random(10) * 8), (random(5) * 8));
+      uint8_t spawned = 0;
+
+      
+      for (uint8_t i = 0; i < 20; i++) {
+        if (!enemies[i].isActive()) {
+          enemies[i].spawn(127 + 11*i, 30);
+          spawned++;
+        }
+
+        if (spawned >= 10) {
+          break;
+        }
       }
+      
     }
 
     void drawBufferLine(uint8_t offset, uint8_t height, uint8_t x) {
@@ -154,7 +165,7 @@ class Level {
     }
 
     void scrollEnemies() {
-      for (uint8_t i = 0; i < 6; i++) {
+      for (uint8_t i = 0; i < 11; i++) {
         enemies[i].setX(enemies[i].getX() - 1);
       }
     }
@@ -183,7 +194,7 @@ class Level {
         lineCount = 0;
       }
 
-      for (uint8_t i = 0; i < 6; i++) {
+      for (uint8_t i = 0; i < 11; i++) {
         if (enemies[i].isActive()) {
           enemies[i].update();
         }
@@ -198,7 +209,7 @@ class Level {
         drawBufferLine(lines[i][0], lines[i][1], i);
       }
 
-      for (uint8_t i = 0; i < 6; i++) {
+      for (uint8_t i = 0; i < 11; i++) {
         if (enemies[i].isActive()) {
           enemies[i].draw();
         }
