@@ -64,7 +64,7 @@ class Bullet {
             break;
         }
 
-        if (x > 120 || x < 0 || y > 67 || y < 0) {
+        if (x > 128 || x < 0 || y > 67 || y < 0) {
           respawn();
         }
       }
