@@ -64,7 +64,7 @@ class Enemy {
     }
 
     void update() {
-      if (getX() == 0) {
+      if (getX() <= 10) {
         die();
       }
     }
