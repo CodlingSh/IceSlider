@@ -45,6 +45,7 @@ class Level {
     int8_t topHeight = 1;
     int8_t bottomHeight = 1;
     uint8_t mood = 0;
+    uint8_t maxEnemies = 20;
 
   public:
     Level(Arduboy2 *ab_ptr, Enemy *enem) : ab(ab_ptr), enemies(enem) {
@@ -82,25 +83,15 @@ class Level {
         lines[i][0] = offset;
         lines[i][1] = length;
       }
-
-      spawnEnemies();
     }
 
-    void spawnEnemies() {
-      uint8_t spawned = 0;
-
-      
-      for (uint8_t i = 0; i < 20; i++) {
+    void spawnEnemy() {
+      for (uint8_t i = 0; i < maxEnemies; i++) {
         if (!enemies[i].isActive()) {
-          enemies[i].spawn(127 + 11*i, 30);
-          spawned++;
-        }
-
-        if (spawned >= 10) {
+          enemies[i].spawn(140, random(15, 46));
           break;
         }
       }
-      
     }
 
     void drawBufferLine(uint8_t offset, uint8_t height, uint8_t x) {
@@ -165,7 +156,7 @@ class Level {
     }
 
     void scrollEnemies() {
-      for (uint8_t i = 0; i < 11; i++) {
+      for (uint8_t i = 0; i < maxEnemies; i++) {
         enemies[i].setX(enemies[i].getX() - 1);
       }
     }
@@ -183,6 +174,9 @@ class Level {
       speed -= 1;
 
       if (speed == 0) {
+        if (lineCount % 14 == 0) {
+          spawnEnemy();
+        }
         scrollLevel();
         scrollEnemies();
         lineCount++;
@@ -194,7 +188,7 @@ class Level {
         lineCount = 0;
       }
 
-      for (uint8_t i = 0; i < 11; i++) {
+      for (uint8_t i = 0; i < maxEnemies; i++) {
         if (enemies[i].isActive()) {
           enemies[i].update();
         }
@@ -209,7 +203,7 @@ class Level {
         drawBufferLine(lines[i][0], lines[i][1], i);
       }
 
-      for (uint8_t i = 0; i < 11; i++) {
+      for (uint8_t i = 0; i < maxEnemies; i++) {
         if (enemies[i].isActive()) {
           enemies[i].draw();
         }
@@ -218,7 +212,17 @@ class Level {
       ab->setCursor(90, 0);
       ab->println(lineCount);
 
+      uint8_t activeCount = 0;
 
+for (uint8_t i = 0; i < maxEnemies; i++) {
+  if (enemies[i].isActive()) {
+    activeCount++;
+  }
+}
+
+ab->setCursor(70, 0);
+ab->print("E:");
+ab->print(activeCount);
     }
 };
 
