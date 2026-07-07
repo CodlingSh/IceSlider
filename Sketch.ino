@@ -10,7 +10,7 @@
 Arduboy2 ab;
 Camera camera(0, 0);
 Player player(&ab);
-Enemy enemies[6];
+Enemy enemies[20];
 Level level(&ab, enemies);
 
 
@@ -65,7 +65,7 @@ void loop() {
     }
   }
 
-  for (uint8_t enemy = 0; enemy < 6; enemy++) {
+  for (uint8_t enemy = 0; enemy < 20; enemy++) {
     if (enemyHit(player.getBullet(), enemies[enemy])) {
       enemies[enemy].die();
       player.getBullet().respawn();
