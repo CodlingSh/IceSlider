@@ -16,7 +16,11 @@ class Enemy {
     uint8_t width = 7;
     uint8_t height = 8;
     uint8_t *spr = nullox;
+    uint8_t highest = 0;
+    uint8_t lowest = 0;
     bool active = false;
+    bool moving = false;
+    int8_t dir = 1;
   public:
 
     bool isActive() {
@@ -31,12 +35,36 @@ class Enemy {
       return y;
     }
 
-    void setX(int8_t newX) {
+    uint8_t getHighest() {
+      return highest;
+    }
+
+    uint8_t getLowest() {
+      return lowest;
+    }
+
+    uint8_t isMoving() {
+      return moving;
+    }
+
+    int8_t getDir() {
+      return dir;
+    }
+
+    void setX(uint8_t newX) {
       x = newX;
     }
 
-    void setY(int8_t newY) {
+    void setY(uint8_t newY) {
       y = newY;
+    }
+
+    void setHighest(uint8_t newH) {
+      highest = newH;
+    }
+
+    void setLowest(uint8_t newL) {
+      lowest = newL;
     }
 
     void setActive(bool isActive) {
@@ -55,22 +83,48 @@ class Enemy {
       setX(222);
       setY(222);
       setActive(false);
+      moving = false;
     }
 
-    void spawn(uint8_t newX, uint8_t newY) {
-      setX(newX);
-      setY(newY);
+    void spawn(uint8_t newH, uint8_t newL) {
+      setX(140);
+      setY(random(newH, newL));
+      setHighest(newH);
+      setLowest(newL);
       setActive(true);
+      moving = false;
+      dir = 1;
     }
 
     void update() {
+      if (!active) {
+        return;
+      }
+
       if (getX() <= 10) {
         die();
+      }
+
+      if (getX() <= 100) {
+        moving = true;
+      }
+
+      if (moving) {
+        if (y <= highest) {
+          dir = 1;
+        } 
+        
+        if (y + height >= lowest) {
+          dir = -1;
+        }
+
+        y += dir;
       }
     }
 
     void draw() {
       Sprites::drawPlusMask(x, y, nullox, 0);
+          
     }
 };
 

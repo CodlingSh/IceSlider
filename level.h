@@ -33,6 +33,11 @@ const uint8_t PROGMEM opening[254][2] = {
   {1, 62}, {1, 62}, {1, 62}, {1, 62}
 };
 
+struct HighAndLow {
+  uint8_t high;
+  uint8_t low;
+}; 
+
 class Level {
   private:
     Arduboy2 *ab;
@@ -88,7 +93,8 @@ class Level {
     void spawnEnemy() {
       for (uint8_t i = 0; i < maxEnemies; i++) {
         if (!enemies[i].isActive()) {
-          enemies[i].spawn(140, random(15, 46));
+          // Enemy will always spawn on the 140th line
+          enemies[i].spawn(getHighAndLow(140, 8).high, getHighAndLow(140, 8).low);
           break;
         }
       }
@@ -161,6 +167,15 @@ class Level {
       }
     }
 
+    HighAndLow getHighAndLow(uint8_t line, uint8_t width) {
+      HighAndLow result;
+      
+      result.high = lines[line][0];
+      result.low = lines[line][0] + lines[line][1];
+
+      return result;
+    }
+
     void update() {
 
       if (ab->pressed(LEFT_BUTTON) || ab->pressed(B_BUTTON)) {
@@ -214,15 +229,23 @@ class Level {
 
       uint8_t activeCount = 0;
 
-for (uint8_t i = 0; i < maxEnemies; i++) {
-  if (enemies[i].isActive()) {
-    activeCount++;
-  }
-}
+      for (uint8_t i = 0; i < maxEnemies; i++) {
+        if (enemies[i].isActive()) {
+          activeCount++;
+        }
+      }
 
-ab->setCursor(70, 0);
-ab->print("E:");
-ab->print(activeCount);
+      ab->setCursor(70, 0);
+      ab->print("E:");
+      ab->print(activeCount);
+
+      for (uint8_t i; i < 20; i++) {
+        Serial.print(i);
+        Serial.print(": ");
+        Serial.print(enemies[i].getY());
+        Serial.println("");
+      }
+      Serial.println("");  
     }
 };
 
