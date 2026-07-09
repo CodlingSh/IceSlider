@@ -40,6 +40,7 @@ void setup() {
   ab.setFrameRate(60);
 
   ab.initRandomSeed();
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -58,12 +59,6 @@ void loop() {
 
   level.update();
   player.update();
-
-  for (uint8_t i = 0; i < 6; i++) {
-    if (enemies[i].isActive()) {
-      enemies[i].update();
-    }
-  }
 
   for (uint8_t enemy = 0; enemy < 20; enemy++) {
     if (enemyHit(player.getBullet(), enemies[enemy])) {
@@ -88,10 +83,10 @@ void loop() {
 
 bool enemyHit(Bullet& blt, Enemy& nme) {
   if (
-    blt.getX() + 3 > nme.getX() &&
-    blt.getX() < nme.getX() + nme.getWidth() &&
-    blt.getY() > nme.getY() &&
-    blt.getY() < nme.getY() + nme.getHeight()
+    blt.getX() + 3 >= nme.getX() &&
+    blt.getX() <= nme.getX() + nme.getWidth() &&
+    blt.getY() >= nme.getY() &&
+    blt.getY() <= nme.getY() + nme.getHeight()
   ) {
     return true;
   } else {
