@@ -42,6 +42,7 @@ const uint8_t PROGMEM nullox[] = {
 
 class Enemy {
   private:
+    Player *player;
     uint8_t x = 200;
     uint8_t y = 100;
     uint8_t width = 7;
@@ -54,7 +55,9 @@ class Enemy {
     bool dying = false;
     int8_t deathTimer = 0;
     int8_t dir = 1;
+
   public:
+    Enemy(Player *plyPtr) : player(plyPtr) {}
 
     bool isActive() {
       return active;
@@ -136,7 +139,7 @@ class Enemy {
         die();
       }
 
-      if (getX() <= 100) {
+      if (getX() <= 100 && !moving && !dying) {
         moving = true;
       }
 
