@@ -53,7 +53,7 @@ class Level {
     uint8_t maxEnemies = 20;
 
   public:
-    Level(Arduboy2 *ab_ptr, Enemy *enem) : ab(ab_ptr), enemies(enem) {
+    Level(Arduboy2 *abPtr, Enemy *enem) : ab(abPtr), enemies(enem) {
       memcpy_P(lines, opening, sizeof(lines));
     }
 
