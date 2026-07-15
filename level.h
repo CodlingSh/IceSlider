@@ -176,7 +176,7 @@ class Level {
         if (lines[line + i][0] > tempHigh) {
           tempHigh = lines[line + i][0];
         }
-        if (lines[line + i][1] + lines[line + i][1] < tempLow) {
+        if (lines[line + i][0] + lines[line + i][1] < tempLow) {
           tempLow = lines[line + i][1] + lines[line + i][1];
         }
       }
