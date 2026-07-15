@@ -43,7 +43,7 @@ const uint8_t PROGMEM nullox[] = {
 class Enemy {
   private:
     Player *player;
-    uint8_t x = 200;
+    int16_t x = 200;
     uint8_t y = 100;
     uint8_t width = 7;
     uint8_t height = 8;
@@ -63,7 +63,7 @@ class Enemy {
       return active;
     }
 
-    uint8_t getX() {
+    int16_t getX() {
       return x;
     }
 
@@ -87,7 +87,7 @@ class Enemy {
       return dir;
     }
 
-    void setX(uint8_t newX) {
+    void setX(int16_t newX) {
       x = newX;
     }
 
@@ -122,7 +122,7 @@ class Enemy {
 
     void spawn(uint8_t newH, uint8_t newL) {
       setX(140);
-      setY(random(newH, newL));
+      setY(random(newH, newL - height));
       setHighest(newH);
       setLowest(newL);
       setActive(true);
@@ -135,11 +135,11 @@ class Enemy {
         return;
       }
 
-      if (getX() <= 10) {
+      if (x <= -10) {
         die();
       }
 
-      if (getX() <= 100 && !moving && !dying) {
+      if (x <= 100 && !moving && !dying) {
         moving = true;
       }
 
