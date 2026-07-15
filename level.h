@@ -169,9 +169,20 @@ class Level {
 
     HighAndLow getHighAndLow(uint8_t line, uint8_t width) {
       HighAndLow result;
+      uint8_t tempHigh = 0;
+      uint8_t tempLow = 64;
+
+      for (uint8_t i = 0; i < width; i++) {
+        if (lines[line + i][0] > tempHigh) {
+          tempHigh = lines[line + i][0];
+        }
+        if (lines[line + i][1] + lines[line + i][1] < tempLow) {
+          tempLow = lines[line + i][1] + lines[line + i][1];
+        }
+      }
       
-      result.high = lines[line][0];
-      result.low = lines[line][0] + lines[line][1];
+      result.high = tempHigh;
+      result.low = tempLow;
 
       return result;
     }
