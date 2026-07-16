@@ -4,12 +4,13 @@
 #include "level.h"
 #include "fuelGage.h"
 #include "enemy.h"
+#include "score.h"
 
 Arduboy2 ab;
 Player player(&ab);
 Enemy enemies[20](&player);
 Level level(&ab, enemies);
-uint16_t score;
+Score score;
 
 // 9x64, 1 frame(s), 74 bytes
 // Example: Sprites::drawOverwrite(x, y, gage, frame);
@@ -28,7 +29,6 @@ void setup() {
   ab.setFrameRate(60);
 
   ab.initRandomSeed();
-  score = 0;
   Serial.begin(9600);
 }
 
@@ -53,15 +53,21 @@ void loop() {
     if (enemyHit(player.getBullet(), enemies[enemy])) {
       enemies[enemy].die();
       player.getBullet().respawn();
+      score.incScore(25);
     }
   }
 
   level.draw();
   player.draw();
+
   
   // ab.fillRect(106, 0, 24, 64, BLACK);
   // ab.drawBitmap(106, 0, gage, 22, 64, BLACK);
   Sprites::drawOverwrite(0, 0, gage, 0);
+  ab.fillRect(121, 0, 7, 64, BLACK);
+  ab.drawFastVLine(121, 0, 64, WHITE);
+
+  score.draw(1, 1);
 
   ab.setCursor(0, 0);
   ab.print(ab.cpuLoad());
