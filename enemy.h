@@ -127,7 +127,7 @@ class Enemy {
       setLowest(newL);
       setActive(true);
       moving = false;
-      dir = 1;
+      dir = -1;
     }
 
     void update() {
@@ -139,8 +139,13 @@ class Enemy {
         die();
       }
 
-      if (x <= 100 && !moving && !dying) {
-        moving = true;
+      if (x <= 55 && !moving && !dying) {
+        if (moving == false) {
+          if (player->getY() > y) {
+            dir = 1;
+          }
+          moving = true;
+        }
       }
 
       if (moving) {
