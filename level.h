@@ -50,7 +50,7 @@ class Level {
     int8_t topHeight = 1;
     int8_t bottomHeight = 1;
     uint8_t mood = 0;
-    uint8_t maxEnemies = 20;
+    uint8_t maxEnemies = 13;
 
   public:
     Level(Arduboy2 *abPtr, Enemy *enem) : ab(abPtr), enemies(enem) {
@@ -176,7 +176,7 @@ class Level {
         if (lines[line + i][0] > tempHigh) {
           tempHigh = lines[line + i][0];
         }
-        if (lines[line + i][0] + lines[line + i][1] < tempLow) {
+        if (lines[line + i][1] + lines[line + i][1] < tempLow) {
           tempLow = lines[line + i][1] + lines[line + i][1];
         }
       }
