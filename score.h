@@ -71,6 +71,13 @@ const uint8_t PROGMEM nine[] = {
   0x26, 0x49, 0x49, 0x3e,
 };
 
+// 4x8, 1 frame(s), 6 bytes
+// Example: Sprites::drawOverwrite(x, y, xSym, frame);
+const uint8_t PROGMEM xSym[] = {
+  4, 8,
+  0x1b, 0x04, 0x04, 0x1b,
+};
+
 class Score {
   private:
     uint32_t score = 0;
@@ -143,27 +150,8 @@ class Score {
       }
     }
 
-    void draw(int8_t xOffset, int8_t yOffset) {
-       uint8_t onesY = 24, tensY = 24, hundredsY = 24, thousandsY = 24, tenthousandsY = 24;
-
-      if (tenthousandsVis) {
-        onesY += 8;
-        tensY += 8;
-        hundredsY += 8;
-        thousandsY += 8;
-      }
-      if (thousandsVis) {
-        onesY += 8;
-        tensY += 8;
-        hundredsY += 8;
-      }
-      if (hundredsVis) {
-        onesY += 8;
-        tensY += 8;
-      }
-      if (tensVis) {
-        onesY += 8;
-      }
+    void draw(uint8_t lives) {
+       uint8_t onesY = 56, tensY = 48, hundredsY = 40, thousandsY = 32, tenthousandsY = 24;
 
       // Check what digits to display
       if (score > 9) {
@@ -185,11 +173,16 @@ class Score {
       if (hundredsVis) {Sprites::drawOverwrite(123, hundredsY, getSprite(hundredsScore), 0);}
       if (thousandsVis) {Sprites::drawOverwrite(123, thousandsY, getSprite(thousandsScore), 0);}
       if (tenthousandsVis) {Sprites::drawOverwrite(123, tenthousandsY, getSprite(tenthousandsScore), 0);}
+
+      Sprites::drawOverwrite(123, 1, xSym, 0);
+      Sprites::drawOverwrite(123, 7, getSprite(lives), 0);
     }
 
     int32_t getScore() {
       return score;
     }
+
+
 };
 
 #endif
