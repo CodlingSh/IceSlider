@@ -71,6 +71,10 @@ class Player {
       return y;
     }
 
+    bool isDying() {
+      return dying;
+    }
+
     void die() {
       dying = true;
       moving = false;
@@ -87,6 +91,17 @@ class Player {
 
     void update() {
       bullet.update();
+
+      if (dying) {
+        deathTimer++;
+
+        if (deathTimer >= 20) {
+          x = 222;
+          y = 222;
+        }
+
+        return;
+      }
 
       if (!moving) {
         return;
@@ -105,24 +120,13 @@ class Player {
         fire();
       }
 
-      if (ab->pressed(B_BUTTON)) {
-        die();
-      }
-
       // Explosiong
-      if (dying) {
-        deathTimer++;
-
-        if (deathTimer >= 10) {
-          dying = false;
-          deathTimer = 0;
-        }
-      }
+      
     }
 
     void draw() {
       if (dying) {
-        Sprites::drawPlusMask(x, y, spr, deathTimer / 2);
+        Sprites::drawPlusMask(x, y, spr, deathTimer / 4);
       } else {
         Sprites::drawPlusMask(x, y, spr, frame);
       }
