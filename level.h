@@ -42,6 +42,7 @@ class Level {
   private:
     Arduboy2 *ab;
     Enemy *enemies;
+    bool scrolling = true;
     uint8_t lines[254][2];
     uint8_t sectsCompleted = 0;
     uint8_t lineCount = 0;
@@ -55,6 +56,10 @@ class Level {
   public:
     Level(Arduboy2 *abPtr, Enemy *enem) : ab(abPtr), enemies(enem) {
       memcpy_P(lines, opening, sizeof(lines));
+    }
+
+    void setScrolling(bool newScroll) {
+      scrolling = newScroll;
     }
 
     void generateLevel() {
@@ -132,7 +137,6 @@ class Level {
       if (excess2 > 0) {
         buffer[x + toDraw2 * 128] = determineExcess(excess2, true);
       }
-      
     }
 
     uint8_t determineExcess(uint8_t num, bool flipped) {
@@ -156,9 +160,6 @@ class Level {
         lines[i][0] = lines[i + 1][0];
         lines[i][1] = lines[i + 1][1];
       }
-
-      // lines[254][0] = random(0, 6);
-      // lines[254][1] = random(53, 58);
     }
 
     void scrollEnemies() {
@@ -176,8 +177,8 @@ class Level {
         if (lines[line + i][0] > tempHigh) {
           tempHigh = lines[line + i][0];
         }
-        if (lines[line + i][1] + lines[line + i][1] < tempLow) {
-          tempLow = lines[line + i][1] + lines[line + i][1];
+        if (lines[line + i][0] + lines[line + i][1] < tempLow) {
+          tempLow = lines[line + i][0] + lines[line + i][1];
         }
       }
       
@@ -189,24 +190,26 @@ class Level {
 
     void update() {
 
-      if (ab->pressed(LEFT_BUTTON) || ab->pressed(B_BUTTON)) {
-        speedCount = 6;
-      } else if (ab->pressed(RIGHT_BUTTON)) {
-        speedCount = 1;
-      } else {
-        speedCount = 2;
-      }
-
-      speed -= 1;
-
-      if (speed == 0) {
-        if (lineCount % 14 == 0) {
-          spawnEnemy();
+      if (scrolling){
+        if (ab->pressed(LEFT_BUTTON) || ab->pressed(B_BUTTON)) {
+          speedCount = 6;
+        } else if (ab->pressed(RIGHT_BUTTON)) {
+          speedCount = 1;
+        } else {
+          speedCount = 2;
         }
-        scrollLevel();
-        scrollEnemies();
-        lineCount++;
-        speed = speedCount;
+
+        speed -= 1;
+
+        if (speed == 0) {
+          if (lineCount % 14 == 0) {
+            spawnEnemy();
+          }
+          scrollLevel();
+          scrollEnemies();
+          lineCount++;
+          speed = speedCount;
+        }
       }
 
       if (lineCount >= 126) {
