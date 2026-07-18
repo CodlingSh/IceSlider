@@ -9,20 +9,10 @@
 Arduboy2 ab;
 Player player(&ab);
 Enemy enemies[13](&player);
+FuelGage fuelGage;
 Level level(&ab, enemies);
 Score score;
-uint8_t lives = 3;
-
-// 7x64, 1 frame(s), 58 bytes
-// Example: Sprites::drawOverwrite(x, y, gage, frame);
-const uint8_t PROGMEM gage[] = {
-  7, 64,
-  0x00, 0x3e, 0x0a, 0x0a, 0x02, 0x00, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0xff, 0x00, 0x7c, 0x54, 0x54, 0x44, 0x00, 0xff,
-};
+int8_t lives = 3;
 
 void setup() {
   ab.begin();
@@ -40,22 +30,23 @@ void loop() {
   ab.pollButtons();
   ab.clear();
 
-  // ab.fillScreen(WHITE);
-
-  // for (uint8_t i = 0; i < 64; i += 1) {
-  //   uint8_t xVar = random(1, 34);
-  //   ab.drawFastHLine(20 + xVar, i, 90, BLACK);
-  //   // ab.fillRect(20 + xVar, i, 90, 8, BLACK);
-  // }
-
   level.update();
   player.update();
+  fuelGage.update();
 
   for (uint8_t enemy = 0; enemy < 13; enemy++) {
     if (enemyHit(player.getBullet(), enemies[enemy])) {
       enemies[enemy].die();
       player.getBullet().respawn();
       score.incScore(25);
+    }
+    if (playerHit(player, enemies[enemy])){
+      if (!player.isDying()) {
+        level.setScrolling(false);
+        player.die();
+        enemies[enemy].die();
+        lives--;
+      }
     }
   }
 
@@ -65,7 +56,7 @@ void loop() {
   
   // ab.fillRect(106, 0, 24, 64, BLACK);
   // ab.drawBitmap(106, 0, gage, 22, 64, BLACK);
-  Sprites::drawOverwrite(0, 0, gage, 0);
+  fuelGage.draw();
   ab.fillRect(121, 0, 7, 64, BLACK);
   ab.drawFastVLine(121, 0, 64, WHITE);
 
@@ -78,12 +69,25 @@ void loop() {
   ab.display();
 }
 
-bool enemyHit(Bullet& blt, Enemy& nme) {
+bool enemyHit(Bullet &blt, Enemy &nme) {
   if (
     blt.getX() + 3 >= nme.getX() &&
     blt.getX() <= nme.getX() + nme.getWidth() &&
     blt.getY() >= nme.getY() &&
     blt.getY() <= nme.getY() + nme.getHeight()
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool playerHit (Player &plr, Enemy &nme) {
+  if (
+    plr.getX() + 8 >= nme.getX() &&
+    plr.getX() <= nme.getX() + nme.getWidth() &&
+    plr.getY() + 8 >= nme.getY() &&
+    plr.getY() <= nme.getY() + nme.getHeight()
   ) {
     return true;
   } else {
