@@ -151,8 +151,8 @@ class Score {
     }
 
     void draw(uint8_t lives) {
-       uint8_t onesY = 56, tensY = 48, hundredsY = 40, thousandsY = 32, tenthousandsY = 24;
-
+      uint8_t onesY = 56, tensY = 48, hundredsY = 40, thousandsY = 32, tenthousandsY = 24;
+      
       // Check what digits to display
       if (score > 9) {
         tensVis = true;
@@ -167,7 +167,6 @@ class Score {
         tenthousandsVis = true;
       }
 
-// Sprites::drawOverwrite(72, 0, arrowUp, 0);
       Sprites::drawOverwrite(123, onesY, getSprite(onesScore), 0);
       if (tensVis) {Sprites::drawOverwrite(123, tensY, getSprite(tensScore), 0);}
       if (hundredsVis) {Sprites::drawOverwrite(123, hundredsY, getSprite(hundredsScore), 0);}
@@ -175,7 +174,11 @@ class Score {
       if (tenthousandsVis) {Sprites::drawOverwrite(123, tenthousandsY, getSprite(tenthousandsScore), 0);}
 
       Sprites::drawOverwrite(123, 1, xSym, 0);
-      Sprites::drawOverwrite(123, 7, getSprite(lives), 0);
+      if (lives > 0 || lives > 9) {
+        Sprites::drawOverwrite(123, 7, getSprite(lives), 0);
+      } else {
+        Sprites::drawOverwrite(123, 7, getSprite(9), 0);
+      }
     }
 
     int32_t getScore() {
