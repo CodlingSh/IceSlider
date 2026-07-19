@@ -21,22 +21,33 @@ const uint8_t PROGMEM needle[] = {
 
 class FuelGage {
   private:
-    uint8_t fuel = 58; 
-    uint8_t fuelTimer = 180;
+    uint32_t lastMillis = 0;
+    int8_t fuel = 46; 
+    bool active = true;
   public:
 
-    void update() {
-      fuelTimer--;
+    int8_t getFuel() {
+      return fuel;
+    }
 
-      if (fuelTimer == 0) {
-        fuel--;
-        fuelTimer = 180;
+    void setActive(bool state) {
+      active = state;
+    }
+
+    void update() {
+      const uint32_t currentMillis = millis();
+
+      if (currentMillis - lastMillis >= 740 && active) {
+        if (fuel > 0) {
+          fuel--;
+        }
+        lastMillis = currentMillis;
       }
     }
 
     void draw() {
       Sprites::drawOverwrite(0, 0, gage, 0);
-      Sprites::drawPlusMask(0, 58 - (58 * (fuel / 100)), needle, 0);
+      Sprites::drawPlusMask(0, 46 - fuel + 7, needle, 0);
     }
 };
 
