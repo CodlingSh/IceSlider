@@ -45,9 +45,19 @@ void loop() {
         level.setScrolling(false);
         player.die();
         enemies[enemy].die();
+        fuelGage.setActive(false);
         lives--;
       }
     }
+  }
+
+  if (fuelGage.getFuel() <= 0) {
+    if (!player.isDying()) {
+        level.setScrolling(false);
+        player.die();
+        fuelGage.setActive(false);
+        lives--;
+      }
   }
 
   level.draw();
@@ -62,7 +72,7 @@ void loop() {
 
   score.draw(lives);
 
-  ab.setCursor(0, 0);
+  ab.setCursor(20, 0);
   ab.print(ab.cpuLoad());
   ab.print("%");
 
