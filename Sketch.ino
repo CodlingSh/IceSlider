@@ -20,7 +20,7 @@ void setup() {
   ab.initRandomSeed();
 
   lives = 3;
-
+  
   Serial.begin(9600);
 }
 
@@ -33,6 +33,8 @@ void loop() {
   level.update();
   player.update();
   fuelGage.update();
+
+  
 
   for (uint8_t enemy = 0; enemy < 13; enemy++) {
     if (enemyHit(player.getBullet(), enemies[enemy])) {
@@ -72,8 +74,9 @@ void loop() {
 
   score.draw(lives);
 
-  ab.setCursor(20, 0);
+  ab.setCursor(10, 0);
   ab.print(ab.cpuLoad());
+  // ab.print(fuelGage.getFuel());
   ab.print("%");
 
   ab.display();
@@ -97,7 +100,8 @@ bool playerHit (Player &plr, Enemy &nme) {
     plr.getX() + 8 >= nme.getX() &&
     plr.getX() <= nme.getX() + nme.getWidth() &&
     plr.getY() + 8 >= nme.getY() &&
-    plr.getY() <= nme.getY() + nme.getHeight()
+    plr.getY() <= nme.getY() + nme.getHeight() &&
+    !nme.isDying()
   ) {
     return true;
   } else {
