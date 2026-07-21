@@ -83,6 +83,10 @@ class Enemy {
       return moving;
     }
 
+    bool isDying() {
+      return dying;
+    }
+
     int8_t getDir() {
       return dir;
     }
@@ -117,7 +121,7 @@ class Enemy {
 
     void die() {
       dying = true;
-      moving = false;        
+      moving = false;
     }
 
     void spawn(uint8_t newH, uint8_t newL) {
@@ -166,8 +170,8 @@ class Enemy {
         if (deathTimer >= 10) {
           setX(222);
           setY(222);
-          setActive(false);
           dying = false;
+          active = false;
           deathTimer = 0;
         }
       }
