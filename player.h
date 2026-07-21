@@ -46,10 +46,13 @@ const uint8_t PROGMEM shipExp[] = {
 class Player {
   private:
     Arduboy2 *ab;
-    const uint8_t *spr = ship;
+    uint8_t *spr = ship;
     int8_t x = 10;
     int8_t y = 28;
-    uint8_t frame = 0;
+    int16_t subY = 448;
+    int8_t vel = 0;
+    int8_t maxVel = 16;
+    int8_t acc = 0;
     Bullet bullet;
     bool bulletActive = false;
     bool dying = false;
@@ -109,26 +112,43 @@ class Player {
 
       // Movement
       if (ab->pressed(UP_BUTTON)) {
-        y--;
+        acc = -1;
       }
-      else if (ab->pressed(DOWN_BUTTON)) {
-        y++;
+      if (ab->notPressed(UP_BUTTON) && ab->notPressed(DOWN_BUTTON)) {
+        acc = 0;
+        vel = 0;
       }
+      
+      
+      if (ab->pressed(DOWN_BUTTON)) {
+        acc = 1;
+      } 
+
+      vel += acc;
+
+      if (vel > maxVel) {
+        subY += maxVel;
+      } else if (vel < (maxVel * -1)) {
+        subY += (maxVel * -1);
+      } else {
+        subY += vel;
+      }
+
+      y = subY / 16;
+
+      
 
       // Shooting
       if (ab->pressed(A_BUTTON)) {
         fire();
       }
-
-      // Explosiong
-      
     }
 
     void draw() {
       if (dying) {
         Sprites::drawPlusMask(x, y, spr, deathTimer / 4);
       } else {
-        Sprites::drawPlusMask(x, y, spr, frame);
+        Sprites::drawPlusMask(x, y, spr, 0);
       }
 
       
